@@ -82,13 +82,13 @@ Intent_Sniffer:
 
 ```
 ActivityWatch ─┐
-onefetch ──────┤→ collect_daily_data.ps1 → daily_data_<YYYYMMDD>.json → 日志归档
+onefetch ──────┤→ collect_daily_data.ps1 → daily_data_YYYY-MM-DD_HHmm.json → 日志归档
 git log ───────┤
 终端历史 ───────┘
 ```
 
 **映射**：`time_tracking.*_minutes` → 变更记录 · `git_stats.files_*` → 变更记录(commits>0) · `repo_snapshot.linesOfCode/filesCount/authorsCount` → 快照字段  
-**一致性检查**：`tools/check_config_consistency.ps1` 验证 CLAUDE.md/记忆/模板三者定义一致。
+**配置一致性检查**：检查 `collect/activity_categories.json` 和 `collect/sensitive_patterns.json` 是否存在。日志模板的量化数据融合规则见 dev-log-tool 的 `spec/log_templates.md`。
 
 ## 密钥遮蔽铁律
 

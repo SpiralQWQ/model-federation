@@ -36,7 +36,7 @@
 | ⚖️ | **仲裁** —— DeepSeek 评判双方输出，采纳对的，驳回错的 |
 | 🔐 | **Gemini 审计** —— 关键词「四方」触发最终安全合规检查 |
 | 🎫 | **签发通行证** —— 没它，Edit/Write/git-commit 全部物理拦截 |
-| 📊 | **量化采集** — ⭐ **V7.0 新增** — ActivityWatch + onefetch + git 数据自动归档 |
+| 📊 | **量化采集** — ⭐ **V7.0 新增** — ActivityWatch + onefetch + git 数据自动归档（由 [dev-log-tool](https://github.com/SpiralQWQ/dev-log-tool) 提供采集管线） |
 
 ## 架构
 
@@ -176,7 +176,7 @@ claude
 
 <details>
 <summary><b>Q: V7.0 的量化数据采集是什么？</b></summary>
-<code>CLAUDE.template.md</code> 中新增了 <code>程序员日志量化数据采集</code> 章节。配合 ActivityWatch + onefetch + git 自动采集时间分类、仓库快照、提交统计等量化指标，融合到每日日志中。详情见模板中的说明。
+量化数据采集由 companion repo <a href="https://github.com/SpiralQWQ/dev-log-tool"><b>dev-log-tool</b></a>（<a href="https://gitee.com/Spiral_QWQ/dev-log-tool">Gitee 镜像</a>）提供。包含 <code>collect/collect_daily_data.ps1</code> 采集脚本（ActivityWatch + onefetch + git + PSReadLine）和日志模板（spec/log_templates.md）。详情见该仓库 README。
 </details>
 
 <details>
@@ -249,14 +249,21 @@ model-federation/
 
 ## 量化数据采集流程（V7.0 新增）
 
+量化数据采集由 **companion repo** 提供，model-federation 专注于模型路由与协同，`dev-log-tool` 负责日志归档 + 数据采集：
+
+| 项目 | GitHub | Gitee | 职责 |
+|------|--------|-------|------|
+| **model-federation** | [SpiralQWQ/model-federation](https://github.com/SpiralQWQ/model-federation) | [Spiral_QWQ/model-federation](https://gitee.com/Spiral_QWQ/model-federation) | 模型路由、通行证锁、spec 规范 |
+| **dev-log-tool** | [SpiralQWQ/dev-log-tool](https://github.com/SpiralQWQ/dev-log-tool) | [Spiral_QWQ/dev-log-tool](https://gitee.com/Spiral_QWQ/dev-log-tool) | 日志模板、量化数据采集脚本、工作流 |
+
 ```
 ActivityWatch (时间追踪) ─┐
-onefetch (仓库快照) ─────┤──→ collect_daily_data.ps1 ──→ daily_data_YYYYMMDD.json ──→ 日志归档
+onefetch (仓库快照) ─────┤──→ dev-log-tool/collect/collect_daily_data.ps1 ──→ daily_data.json ──→ 日志归档
 git log (提交统计) ──────┤
 PSReadLine (终端历史) ───┘
 ```
 
-采集脚本自动输出的数据直接融合到程序员日志的「变更记录」和「量化快照」字段。
+两仓库独立发布但设计为配套使用。部署 model-federation 后，建议同时拉取 dev-log-tool 获取完整日志工作流。
 
 ---
 

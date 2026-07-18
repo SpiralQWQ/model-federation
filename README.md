@@ -36,7 +36,7 @@ This system transforms your Claude Code into a multi-model development team. It 
 | ⚖️ | **DeepSeek Arbiter** — judges all outputs, adopts right, rejects wrong |
 | 🔐 | **Gemini Auditor** — security scan & final compliance check (keyword "四方") |
 | 🎫 | **Ticket Lock** — physical gate before Edit/Write/git-commit |
-| 📊 | **Quantified Data** — ActivityWatch + onefetch + git stats → daily journal |
+| 📊 | **Quantified Data** — ActivityWatch + onefetch + git stats → daily journal (pipeline by [dev-log-tool](https://github.com/SpiralQWQ/dev-log-tool)) |
 
 ## Architecture
 
@@ -176,7 +176,7 @@ No. <code>Edit</code>/<code>Write</code> on source files are intercepted by a Pr
 
 <details>
 <summary><b>Q: What is the quantified data collection in V7.0?</b></summary>
-<code>CLAUDE.template.md</code> includes a new <code>programmer log quantified data</code> section. It integrates ActivityWatch time categories, onefetch repo snapshots, and git commit stats into your daily dev journal. See the template for details.
+Provided by the companion repo <a href="https://github.com/SpiralQWQ/dev-log-tool"><b>dev-log-tool</b></a> (<a href="https://gitee.com/Spiral_QWQ/dev-log-tool">Gitee mirror</a>). It includes <code>collect/collect_daily_data.ps1</code> (ActivityWatch + onefetch + git + PSReadLine) and log templates (spec/log_templates.md). See its README for details.
 </details>
 
 <details>
@@ -249,14 +249,21 @@ User: "review this function"
 
 ## Quantified Data Pipeline (V7.0 NEW)
 
+Quantified data collection is provided by the **companion repo** — model-federation focuses on model routing and collaboration, while `dev-log-tool` handles journal archiving + data collection:
+
+| Repo | GitHub | Gitee | Role |
+|------|--------|-------|------|
+| **model-federation** | [SpiralQWQ/model-federation](https://github.com/SpiralQWQ/model-federation) | [Spiral_QWQ/model-federation](https://gitee.com/Spiral_QWQ/model-federation) | Model routing, Ticket Lock, spec/ |
+| **dev-log-tool** | [SpiralQWQ/dev-log-tool](https://github.com/SpiralQWQ/dev-log-tool) | [Spiral_QWQ/dev-log-tool](https://gitee.com/Spiral_QWQ/dev-log-tool) | Log templates, collection scripts, workflow |
+
 ```
 ActivityWatch (time tracking) ──┐
-onefetch (repo snapshot) ───────┤──→ collect_daily_data.ps1 ──→ daily_data.json ──→ journal
+onefetch (repo snapshot) ───────┤──→ dev-log-tool/collect/collect_daily_data.ps1 ──→ daily_data.json ──→ journal
 git log (commit stats) ─────────┤
 PSReadLine (terminal history) ──┘
 ```
 
-The collection script output merges directly into the "Changes" and "Quantified Snapshot" fields of your daily developer journal.
+Both repos are independently published but designed to work together. After deploying model-federation, also pull dev-log-tool for the complete logging workflow.
 
 ---
 

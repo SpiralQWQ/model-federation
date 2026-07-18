@@ -1,0 +1,210 @@
+{
+  "env": {
+    "ANTHROPIC_API_KEY": "<YOUR_API_KEY_HERE>",
+    "ANTHROPIC_BASE_URL": "https://api.deepseek.com/anthropic",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "deepseek-v4-pro",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL_NAME": "deepseek-v4-pro",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "deepseek-v4-pro[1M]",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL_NAME": "deepseek-v4-pro",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "deepseek-v4-flash[1M]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL_NAME": "deepseek-v4-flash",
+    "ANTHROPIC_MODEL": "deepseek-v4-flash",
+    "CLAUDE_CODE_EFFORT_LEVEL": "max",
+    "DISABLE_AUTOUPDATER": "1",
+    "ENABLE_TOOL_SEARCH": "true",
+    "QWEN_API_KEY": "<YOUR_API_KEY_HERE>",
+    "GEMINI_API_KEY": "<YOUR_GEMINI_API_KEY>",
+    "XSKILL_API_KEY": "<YOUR_API_KEY_HERE>",
+    "GLM_API_KEY": "<YOUR_GLM_API_KEY>",
+    "SILICONFLOW_API_KEY": "<YOUR_API_KEY_HERE>",
+    "HUNYUAN_SECRET_ID": "<YOUR_HUNYUAN_SECRET_ID>",
+    "HUNYUAN_SECRET_KEY": "<YOUR_HUNYUAN_SECRET_KEY>"
+  },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Bash(npm *)",
+      "Bash(git *)",
+      "Bash(npx *)",
+      "Bash(pnpm *)",
+      "Bash(node *)",
+      "Bash(ls *)",
+      "Bash(cd *)",
+      "Bash(Get-ChildItem *)",
+      "Bash(Set-Location *)",
+      "Bash(true)",
+      "Read",
+      "Glob",
+      "Grep",
+      "Edit(<YOUR_WORKSPACE>",
+      "Write(<YOUR_WORKSPACE>",
+      "mcp__codegraph__codegraph_search",
+      "mcp__codegraph__codegraph_context",
+      "mcp__codegraph__codegraph_callers",
+      "mcp__codegraph__codegraph_callees",
+      "mcp__codegraph__codegraph_impact",
+      "mcp__codegraph__codegraph_node",
+      "mcp__codegraph__codegraph_status",
+      "mcp__filesystem__*",
+      "mcp__ffmpeg__*",
+      "mcp__docx__*"
+    ]
+  },
+  "model": "opus",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "^(Edit|Write|Read|Glob|Grep|Bash)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"~\\.claude\\plugins\\cache\\agentmemory\\agentmemory\\0.9.26\\scripts\\post-tool-use.mjs\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File ~/.claude/scripts/pre-commit-check.ps1",
+            "if": "Bash(git commit*)"
+          }
+        ]
+      },
+      {
+        "matcher": "^(Edit|Write)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python ~/.claude/scripts/check_synergy_ticket.py \"{{tool.name}}\" \"{{tool.file_path}}\""
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rtk hook claude"
+          }
+        ]
+      },
+      {
+        "matcher": "^(Bash|Read|Edit|Write|Grep|Glob)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File ~/.claude/scripts/auto-consolidate.ps1 -ToolName \"{{tool.name}}\""
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File ~/.claude/scripts/start-agentmemory.ps1",
+            "statusMessage": "agentmemory: starting engine..."
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"~\\.claude\\superpowers\\hooks\\run-hook.cmd\" session-start"
+          }
+        ]
+      },
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File ~/.claude/superpowers/scripts/update-superpowers.ps1",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File ~/.claude/scripts/notify-sound.ps1",
+            "async": true
+          },
+          {
+            "type": "command",
+            "command": "powershell -ExecutionPolicy Bypass -File ~/.claude/scripts/save-session-end.ps1",
+            "statusMessage": "Saving session summary to agentmemory...",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"~\\.claude\\plugins\\cache\\agentmemory\\agentmemory\\0.9.26\\scripts\\prompt-submit.mjs\"",
+            "statusMessage": "agentmemory: recalling relevant memories..."
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "$input | ConvertFrom-Json | ForEach-Object { $dir = ($_.workspace.current_dir -split '[/\\\\]')[-1]; $model = $_.model.display_name; $used = $_.context_window.used_tokens; $total = $_.context_window.total_tokens; $pct = if ($total -gt 0) { [math]::Round($used / $total * 100, 1) } else { 0 }; if ($pct -ge 100) { \"$dir | $model | FULL\" } elseif ($pct -gt 85) { \"$dir | $model | ${pct}% ⚠\" } else { \"$dir | $model | ${pct}%\" } }"
+  },
+  "enabledPlugins": {
+    "agentmemory": true,
+    "claude-api@anthropic-agent-skills": true,
+    "commit-commands@claude-plugins-official": true,
+    "content-creator@awesome-claude-code-plugins": true,
+    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": false
+  },
+  "extraKnownMarketplaces": {
+    "agentmemory": {
+      "source": {
+        "source": "github",
+        "repo": "rohitg00/agentmemory"
+      }
+    },
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    },
+    "awesome-claude-code-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "ccplugins/awesome-claude-code-plugins"
+      }
+    },
+    "karpathy-skills": {
+      "source": {
+        "source": "github",
+        "repo": "multica-ai/andrej-karpathy-skills"
+      }
+    }
+  },
+  "autoCompactWindow": 850000,
+  "autoMemoryEnabled": true,
+  "skipDangerousModePermissionPrompt": true,
+  "autoCompactEnabled": true
+}

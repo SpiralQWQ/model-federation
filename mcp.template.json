@@ -1,0 +1,74 @@
+﻿{
+    "mcpServers":  {
+                       "filesystem":  {
+                                          "command":  "node",
+                                          "args":  [
+                                                       "<YOUR_WORKSPACE>/tools",
+                                                       "<YOUR_WORKSPACE>"
+                                                   ]
+                                      },
+                       "ffmpeg":  {
+                                      "command":  "npx",
+                                      "args":  [
+                                                   "-y",
+                                                   "mcp-ffmpeg"
+                                               ]
+                                  },
+                       "docx":  {
+                                    "command":  "node",
+                                    "args":  [
+                                                 "~\\docx-mcp\\dist\\index.js"
+                                             ]
+                                },
+                       "playwright-edge":  {
+                                               "command":  "npx",
+                                               "args":  [
+                                                            "-y",
+                                                            "@playwright/mcp@latest",
+                                                            "--browser",
+                                                            "msedge",
+                                                            "--executable-path",
+                                                            "<YOUR_EDGE_PATH>",
+                                                            "--isolated"
+                                                        ]
+                                           },
+                       "minimax-mcp":  {
+                                           "command":  "npx",
+                                           "args":  [
+                                                        "-y",
+                                                        "minimax-mcp-js"
+                                                    ],
+                                           "env":  {
+                                                       "MINIMAX_MCP_BASE_PATH": "<YOUR_WORKSPACE>"
+                                                   }
+                                       },
+                       "apiz":  {
+                                    "url":  "https://api.apiz.ai/api/v3/mcp-http",
+                                    "headers":  {
+                                                    "Authorization":  "Bearer <YOUR_API_KEY_HERE>"
+                                                }
+                                },
+                       "siliconflow":  {
+                                           "command":  "python",
+                                           "args":  [
+                                                        "<YOUR_WORKSPACE>"
+                                                    ]
+                                       },
+                       "unity-editor-mcp":  {
+                                          "command":  "npx",
+                                          "args":  [
+                                                       "unity-editor-mcp@latest"
+                                                   ]
+                                      },
+                       "agentmemory":  {
+                                          "command":  "npx",
+                                          "args":  [
+                                                       "-y",
+                                                       "@agentmemory/mcp"
+                                                   ],
+                                          "env":  {
+                                                      "AGENTMEMORY_URL":  "http://localhost:3111"
+                                                  }
+                                      }
+                   }
+}

@@ -1,0 +1,6 @@
+# Model Federation V7.0 — Python Dependencies
+# All core router scripts (dashscope_router.py, glm_router.py, check_synergy_ticket.py)
+# use only Python standard library. No mandatory pip dependencies.
+
+# Optional: Image resizing in vision_analyzer.py
+# Pillow>=10.0.0

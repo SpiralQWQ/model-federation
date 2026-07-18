@@ -30,11 +30,11 @@
 | 步骤 | 动作 |
 |:--:|------|
 | 🔍 | **嗅探**意图 —— 这是写代码？改架构？修 Bug？还是纯闲聊？ |
-| 🧵 | **提取**真实源码（绝不发送摘要给模型） |
+| 🧵 | **JIT 路由表** —— 按需从 `spec/` 加载详细协议，核心文件仅 ~140 行 |
 | 🔧 | **调度** Qwen 重构/优化（主刀） |
-| 🔬 | **调度** GLM 找边界条件、死锁风险、缺失注释（质检） |
+| 🔬 | **调度** GLM 找边界条件、语义质检、评分门禁（≥9.8/10） |
 | ⚖️ | **仲裁** —— DeepSeek 评判双方输出，采纳对的，驳回错的 |
-| 📝 | **日志**落盘到 Markdown 文件 —— 不可篡改的审查证据 |
+| 🔐 | **Gemini 审计** —— 关键词「四方」触发最终安全合规检查 |
 | 🎫 | **签发通行证** —— 没它，Edit/Write/git-commit 全部物理拦截 |
 | 📊 | **量化采集** — ⭐ **V7.0 新增** — ActivityWatch + onefetch + git 数据自动归档 |
 
@@ -45,8 +45,8 @@
     │
     ▼
 ┌──────────────────────────────────────┐
-│        意图嗅探器 (DeepSeek)           │
-│   "代码？推理？视觉？闲聊？"            │
+│        意图嗅探器 (DeepSeek)           │  ◀── 核心规则(~140行)
+│  + JIT 路由表 → spec/*.md            │  ◀── 按需加载
 └──────────┬───────────────────────────┘
            │
     ┌──────▼──────┐     ┌──────────────┐     ┌─────────────┐
@@ -132,7 +132,17 @@ cp scripts/pre-commit.template .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 
-### 第六步 —— 启动
+### 第六步 —— （V7.0 新增）部署 spec 目录
+
+将 `spec/` 目录复制到你的项目根目录（JIT 路由表需要）：
+
+```bash
+cp -r spec/ /path/to/your/project/spec/
+```
+
+> 没有 `spec/`，多模型仲裁和质检门禁将回退到内联默认值。
+
+### 第七步 —— 启动
 
 ```bash
 claude
@@ -179,18 +189,25 @@ V7.0 新增的 GLM 9.8+ 质量门禁：每次直写（配置文件修改、CLAUD
 ## 文件树
 
 ```
-Model Federation V7.0/
+model-federation/
 ├── README.md                     ← English
 ├── README_zh.md                  ← 中文（你在这里）
-├── CLAUDE.template.md            (570+行) AI 行为规则模板（V7.0 新增量化采集 + GLM 门禁）
+├── CLAUDE.template.md            (~140行) 核心规则 + JIT 路由表（V7.0: 模块化架构）
 ├── settings.template.json        (10把Key) 环境变量模板 — 全部占位符
 ├── mcp.template.json             (6个MCP) 服务器配置模板
-└── scripts/
-    ├── dashscope_router.py       (850+行) Qwen 全模型路由 + 通行证签发
-    ├── glm_router.py             (360+行) GLM 全模型路由 + 通行证签发
-    ├── vision_analyzer.py        (340+行) 并行双规视觉 (Qwen-VL + GLM-4.6V)
-    ├── check_synergy_ticket.py   通行证锁 Hook (拦截 Edit/Write)
-    └── pre-commit.template       Git Hook (拦截无证 commit)
+├── scripts/
+│   ├── dashscope_router.py       (850+行) Qwen 全模型路由 + 通行证签发
+│   ├── glm_router.py             (360+行) GLM 全模型路由 + 通行证签发
+│   ├── vision_analyzer.py        (340+行) 并行双规视觉 (Qwen-VL + GLM-4.6V)
+│   ├── check_synergy_ticket.py   通行证锁 Hook (拦截 Edit/Write)
+│   └── pre-commit.template       Git Hook (拦截无证 commit)
+└── spec/                         ⬅ V7.0 模块化规范，JIT 路由表按需加载
+    ├── collaboration.md          三方/四方协同协议
+    ├── code_review.md            代码审查清单
+    ├── vision_rules.md           多模态视觉规则
+    ├── billing_rules.md          Token 计费规则
+    ├── superpowers.md            Superpowers 技能清单
+    └── log_templates.md          日志模板与命名规范
 ```
 
 ---
@@ -246,13 +263,11 @@ PSReadLine (终端历史) ───┘
 ## 更新日志
 
 ### V7.0 (2026-07-18)
-- **程序员日志量化采集**：ActivityWatch 时间分类 + onefetch 仓库快照 + git 提交统计 + 终端历史自动归档
-- **GLM 质检门禁**：文件直写前必须经 GLM 9.8+ 质检评分通过，确保每行产出经第三方审查
-- **三方配置一致性检查**：CLAUDE.md / 记忆规则 / spec 模板三处日志字段定义一致性自动验证
-- **CLAUDE.md JIT 路由表**：核心规则保留在 CLAUDE.md，详细规范按需加载 `.claude/spec/*.md`
-- **八个日志字段强制序**：日期/会话起止/模型/Token消耗/花费反馈/变更记录/文件状态/量化快照
+- **架构重构**：627 行单体模板 → ~140 行核心规则 + JIT 路由表 + `spec/` 模块化目录（6 个规范文件）
+- **GLM 质检门禁**：文件直写前必须经 GLM 9.8+ 质检评分通过
+- **量化数据采集**：ActivityWatch + onefetch + git 提交统计自动归档
 - **密钥遮蔽铁律**：日志中所有 API Key / Token / 密码自动 `***` 打码
-- **前后端全链路测试**：6 个节点全部通过验证
+- **三方配置一致性检查**：CLAUDE.md / 记忆规则 / spec 模板三方对齐校验
 
 ### V6.0 (2026-06-22)
 - **通行证锁**：物理文件系统拦截 Edit/Write/git-commit

@@ -25,18 +25,18 @@
 
 ## What It Does
 
-You're coding in Claude Code. You ask a question. Before any answer leaves your terminal, this system:
+This system transforms your Claude Code into a multi-model development team. It uses a **modular architecture** — core rules live in `CLAUDE.template.md` (~140 lines), detailed protocols in `spec/` directory loaded on demand via a Just-In-Time (JIT) routing table.
 
-| Step | Action |
-|:--:|------|
-| 🔍 | **Sniffs** your intent — is this code? Architecture? A bug? Or just small talk? |
-| 🧵 | **Extracts** real source code from your files (never sends summaries to models) |
-| 🔧 | **Dispatches** Qwen to rewrite/optimize (the "Surgeon") |
-| 🔬 | **Dispatches** GLM to find edge cases, deadlocks, and missing comments (the "Inspector") |
-| ⚖️ | **Arbitrates** — DeepSeek judges both outputs, adopts what's right, rejects what's wrong |
-| 📝 | **Logs** everything to physical Markdown files — immutable proof that review happened |
-| 🎫 | **Issues a Ticket** — without it, Edit/Write/git-commit are physically blocked |
-| 📊 | **Quantifies** — ⭐ **V7.0 NEW** — auto-collects ActivityWatch, onefetch & git data into daily journals |
+| Component | What It Does |
+|:---------:|------|
+| 🔍 | **Intent Sniffer** — classifies every query (code? reasoning? vision? chat?) |
+| 🧵 | **JIT Routing Table** — loads detailed specs from `spec/` only when needed |
+| 🔧 | **Qwen Surgeon** — code rewrite, optimization, syntax checking |
+| 🔬 | **GLM Inspector** — edge cases, semantic check, quality gate (≥9.8/10) |
+| ⚖️ | **DeepSeek Arbiter** — judges all outputs, adopts right, rejects wrong |
+| 🔐 | **Gemini Auditor** — security scan & final compliance check (keyword "四方") |
+| 🎫 | **Ticket Lock** — physical gate before Edit/Write/git-commit |
+| 📊 | **Quantified Data** — ActivityWatch + onefetch + git stats → daily journal |
 
 ## Architecture
 
@@ -45,13 +45,13 @@ User Prompt
     │
     ▼
 ┌──────────────────────────────────────┐
-│        Intent Sniffer (DeepSeek)       │
-│   "Is this code? reasoning? vision?"  │
+│      Intent Sniffer (DeepSeek)        │  ◀── core (~140 lines)
+│  + JIT Routing Table → spec/*.md     │  ◀── loaded on demand
 └──────────┬───────────────────────────┘
            │
     ┌──────▼──────┐     ┌──────────────┐     ┌─────────────┐
     │  Qwen        │ ──▶ │  GLM         │ ──▶ │  DeepSeek   │
-    │  Surgeon     │     │  Inspector   │     │  Arbitrator │
+    │  Surgeon     │     │  Inspector   │     │  Arbiter    │
     │  (qwen3-     │     │  (glm-4.5-air│     │  (v4-pro)   │
     │   coder-plus)│     │   / glm-4.7) │     │             │
     └──────┬───────┘     └──────┬───────┘     └──────┬──────┘
@@ -61,7 +61,6 @@ User Prompt
                     ┌───────────▼───────────┐
                     │  Physical Log + Ticket │
                     │  + Quantified Data     │
-                    │  (V7.0 NEW)            │
                     └───────────────────────┘
 
 Keyword "四方" ──▶ + Gemini 3.5 Flash (Security Auditor)
@@ -133,7 +132,17 @@ cp scripts/pre-commit.template .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 
-### Step 6 — Launch
+### Step 6 — (V7.0) Deploy Spec Directory
+
+Copy `spec/` to your project root (required for JIT routing table):
+
+```bash
+cp -r spec/ /path/to/your/project/spec/
+```
+
+> Without `spec/`, multi-model arbitration and quality gates fall back to inline defaults.
+
+### Step 7 — Launch
 
 ```bash
 claude
@@ -180,18 +189,25 @@ V7.0's new GLM quality gate: before any file write (config changes, CLAUDE.md ed
 ## File Tree
 
 ```
-Model Federation V7.0/
+model-federation/
 ├── README.md                     ← English (you are here)
 ├── README_zh.md                  ← 中文
-├── CLAUDE.template.md            (570+ lines) AI behavior rules (V7.0: quantified data + GLM gate)
+├── CLAUDE.template.md            (~140 lines) Core rules + JIT routing table (V7.0: modular)
 ├── settings.template.json        (10 keys)    Env var template — all placeholders
 ├── mcp.template.json             (6 servers)  MCP configuration template
-└── scripts/
-    ├── dashscope_router.py       (850+ lines) Qwen full-model router + ticket issuer
-    ├── glm_router.py             (360+ lines) GLM full-model router + ticket issuer
-    ├── vision_analyzer.py        (340+ lines) Parallel dual-vision (Qwen-VL + GLM-4.6V)
-    ├── check_synergy_ticket.py   Ticket Lock hook (PreToolUse — blocks Edit/Write)
-    └── pre-commit.template       Git hook (blocks commit without ticket)
+├── scripts/
+│   ├── dashscope_router.py       (850+ lines) Qwen full-model router + ticket issuer
+│   ├── glm_router.py             (360+ lines) GLM full-model router + ticket issuer
+│   ├── vision_analyzer.py        (340+ lines) Parallel dual-vision (Qwen-VL + GLM-4.6V)
+│   ├── check_synergy_ticket.py   Ticket Lock hook (PreToolUse — blocks Edit/Write)
+│   └── pre-commit.template       Git hook (blocks commit without ticket)
+└── spec/                         ⬅ V7.0 Modular specs, loaded by JIT routing table
+    ├── collaboration.md          Tri-party / four-party protocols
+    ├── code_review.md            Pre-submit checklist
+    ├── vision_rules.md           Dual vision analysis rules
+    ├── billing_rules.md          Token billing categories & report format
+    ├── superpowers.md            Superpowers skill inventory
+    └── log_templates.md          Log naming & content requirements
 ```
 
 ---
@@ -247,13 +263,11 @@ The collection script output merges directly into the "Changes" and "Quantified 
 ## Changelog
 
 ### V7.0 (2026-07-18)
-- **Programmer journal quantified data**: ActivityWatch time categories + onefetch repo snapshots + git commit stats + terminal history auto-archived
+- **Architecture overhaul**: 627-line monolithic template → ~140-line core rules + JIT routing table + `spec/` modular directory (6 files)
 - **GLM quality gate**: File writes require GLM quality score ≥ 9.8/10 — every output is third-party verified
-- **Three-way config consistency check**: Auto-verify that CLAUDE.md / memory rules / spec template all agree on log field definitions
-- **CLAUDE.md JIT routing table**: Core rules stay in CLAUDE.md; detailed specs load on demand from `.claude/spec/*.md`
-- **8-field mandatory header**: Date / Session / Model / Token / Cost / Changes / File Status / Quantified Snapshot
+- **Quantified data pipeline**: ActivityWatch time categories + onefetch repo snapshots + git commit stats + terminal history auto-archived
 - **Key masking mandate**: All API Keys / Tokens / passwords auto-redacted with `***` in logs
-- **End-to-end chain test**: All 6 verification nodes PASS
+- **3-way config consistency check**: Auto-verify CLAUDE.md / memory rules / spec template alignment
 
 ### V6.0 (2026-06-22)
 - **Ticket Lock**: Physical file-system gate blocks Edit/Write/git-commit without synergy

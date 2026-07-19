@@ -274,7 +274,7 @@ PSReadLine (终端历史) ───┘
 - **billing_rules.md 升级**：新增会话 Token 累计表 + 日志头部集成格式 + 自动触发说明
 - **log_templates.md 聚焦**：从"程序员日志+协同日志"混合 → 专精协同日志模板（含 Token 计费行要求）
 - **code_review.md 重写**：旧专用清单 → 通用 5 维度审查管线
-- **[联动] dev-log-tool**：两个仓库 spec 格式统一，billing_rules 可供程序员日志跨仓库引用
+- **[联动] [dev-log-tool](https://github.com/SpiralQWQ/dev-log-tool)**：两个仓库 spec 格式统一，billing_rules 可供程序员日志跨仓库引用
 
 ### V7.0 (2026-07-18)
 - **架构重构**：627 行单体模板 → ~140 行核心规则 + JIT 路由表 + `spec/` 模块化目录（6 个规范文件）

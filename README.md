@@ -274,7 +274,7 @@ Both repos are independently published but designed to work together. After depl
 - **billing_rules.md upgraded**: Added session token accumulation table + log header integration format + auto-trigger note
 - **log_templates.md focused**: Changed from "programmer log + collaboration log" hybrid → dedicated collaboration log template (with Token billing line requirement)
 - **code_review.md rewritten**: Legacy checklist → general 5-dimension review pipeline
-- **[Link] dev-log-tool**: Both repos share unified spec format; billing_rules available as cross-repo reference for programmer logs
+- **[Link] [dev-log-tool](https://github.com/SpiralQWQ/dev-log-tool)**: Both repos share unified spec format; billing_rules available as cross-repo reference for programmer logs
 
 ### V7.0 (2026-07-18)
 - **Architecture overhaul**: 627-line monolithic template → ~140-line core rules + JIT routing table + `spec/` modular directory (6 files)

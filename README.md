@@ -7,13 +7,13 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-7.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/version-7.1-blue" alt="Version">
   <img src="https://img.shields.io/badge/python-3.10+-green" alt="Python">
   <img src="https://img.shields.io/badge/license-MIT-brightgreen" alt="License">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platform">
 </p>
 
-<h1 align="center">Model Federation V7.0</h1>
+<h1 align="center">Model Federation V7.1</h1>
 <p align="center"><b>Local Multi-Model Federation Agent for Claude Code</b></p>
 
 <p align="center">
@@ -268,6 +268,13 @@ Both repos are independently published but designed to work together. After depl
 ---
 
 ## Changelog
+
+### V7.1 (2026-07-19)
+- **All 6 spec files pipelined**: collaboration / code_review / superpowers / vision_rules / log_templates / billing_rules — all upgraded to Phase 2→3→4 pipeline format with quality gates (Qwen+GLM ≥9.5)
+- **billing_rules.md upgraded**: Added session token accumulation table + log header integration format + auto-trigger note
+- **log_templates.md focused**: Changed from "programmer log + collaboration log" hybrid → dedicated collaboration log template (with Token billing line requirement)
+- **code_review.md rewritten**: Legacy checklist → general 5-dimension review pipeline
+- **[Link] dev-log-tool**: Both repos share unified spec format; billing_rules available as cross-repo reference for programmer logs
 
 ### V7.0 (2026-07-18)
 - **Architecture overhaul**: 627-line monolithic template → ~140-line core rules + JIT routing table + `spec/` modular directory (6 files)

@@ -7,13 +7,13 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-7.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/version-7.1-blue" alt="Version">
   <img src="https://img.shields.io/badge/python-3.10+-green" alt="Python">
   <img src="https://img.shields.io/badge/license-MIT-brightgreen" alt="License">
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platform">
 </p>
 
-<h1 align="center">Model Federation V7.0</h1>
+<h1 align="center">Model Federation V7.1</h1>
 <p align="center"><b>Claude Code 本地多模型联邦 Agent 架构</b></p>
 
 <p align="center">
@@ -268,6 +268,13 @@ PSReadLine (终端历史) ───┘
 ---
 
 ## 更新日志
+
+### V7.1 (2026-07-19)
+- **全部 6 个 spec 文件管线化**：collaboration / code_review / superpowers / vision_rules / log_templates / billing_rules 全部补全 Phase 2→3→4 管线格式 + 质检门禁（Qwen+GLM ≥9.5）
+- **billing_rules.md 升级**：新增会话 Token 累计表 + 日志头部集成格式 + 自动触发说明
+- **log_templates.md 聚焦**：从"程序员日志+协同日志"混合 → 专精协同日志模板（含 Token 计费行要求）
+- **code_review.md 重写**：旧专用清单 → 通用 5 维度审查管线
+- **[联动] dev-log-tool**：两个仓库 spec 格式统一，billing_rules 可供程序员日志跨仓库引用
 
 ### V7.0 (2026-07-18)
 - **架构重构**：627 行单体模板 → ~140 行核心规则 + JIT 路由表 + `spec/` 模块化目录（6 个规范文件）

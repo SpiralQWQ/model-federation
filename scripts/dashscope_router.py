@@ -230,7 +230,7 @@ def _write_physical_log(
     try:
         log_dir = _ensure_log_dir()
         now_str = _dt.now().strftime("%Y%m%d-%H%M")
-        timestamp = _dt.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = _dt.now().isoformat()
 
         # 每条协同调用生成独立文件（精确到分钟）
         seq = _next_log_number(log_dir)

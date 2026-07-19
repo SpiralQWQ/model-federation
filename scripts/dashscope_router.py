@@ -257,7 +257,8 @@ def _write_physical_log(
 **Prompt**: {prompt_short}
 
 **响应**: {response_short}
-"""
+
+---"""
 
         with open(log_path, "w", encoding="utf-8") as f:
             f.write(entry)

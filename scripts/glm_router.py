@@ -149,18 +149,20 @@ def _write_physical_log(
         log_path = os.path.join(log_dir, f"{seq:02d}_{engine}({model})_{role_part}_{now_str}.md")
         prompt_short = prompt[:200].replace("\n", " ") + ("..." if len(prompt) > 200 else "")
         response_short = response_text[:300].replace("\n", " ") + ("..." if len(response_text) > 300 else "")
-        role_tag = f" — {role}" if role else ""
+        timestamp = _dt.now().isoformat()
 
-        entry = f"""### {_dt.now().strftime('%H:%M:%S')} | {engine}{role_tag}
+        entry = f"""# {engine}({model}) — {role or task_type}
 
 | 字段 | 值 |
 |------|-----|
 | **引擎** | {engine} |
 | **模型** | `{model}` |
 | **任务类型** | {task_type} |
+| **角色** | {role or '（路由自动调用）'} |
 | **计费** | {billing} |
 | **Token** | {input_tokens}→{output_tokens} |
 | **耗时** | {elapsed:.1f}s |
+| **时间** | {timestamp} |
 
 **Prompt**: {prompt_short}
 
